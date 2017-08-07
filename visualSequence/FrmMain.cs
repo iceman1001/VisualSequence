@@ -14,9 +14,9 @@ namespace visualSequence
 {
     public struct seqChain
     {
-        public int x;
-        public int y;
-        public int z;
+        public uint x;
+        public uint y;
+        public uint z;
     }
 
     public partial class FrmMain : Form
@@ -33,7 +33,7 @@ namespace visualSequence
 
         private List<seqChain> chain = new List<seqChain>();
         private List<seqChain> guesschain = new List<seqChain>();
-        private List<int> chainInts = new List<int>();
+        private List<uint> chainInts = new List<uint>();
 
         public FrmMain()
         {
@@ -69,16 +69,44 @@ namespace visualSequence
         private void btnLoad_Click(object sender, EventArgs e)
         {
             var filename = tbFolder.Text;
-            LoadSeqNumsFromFile(filename);
+            if ( checkBox2.Checked)
+                LoadSeqNumsFromCsvFile(filename);
+            if (checkBox1.Checked)
+                LoadSeqNumsFromBinFile(filename);
         }
 
+        private void LoadSeqNumsFromBinFile(string filename)
+        {
+            if (!File.Exists(filename))
+                return;
+
+            // check filesize :)
+
+            chainInts = new List<uint>();
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                
+                using (var br = new BinaryReader(stream))
+                {
+                    var pos = 0;
+                    int length = (int) br.BaseStream.Length & 0x7ffffffC;
+                    while (pos < length)
+                    {
+                        var a = br.ReadUInt32();
+                     
+                        chainInts.Add(a);
+                        pos += (sizeof (uint));
+                    }
+                }
+            }
+        }
+
+      
         private void GenerateImage()
         {
             Bitmap img = new Bitmap(size_x, size_y, PixelFormat.Format32bppRgb);
 
             Graphics g = Graphics.FromImage(img);
-
-            //g.Clear(Color.Black);
 
             int seq3th = 0, seq2th = 0, seq1th = 0;
 
@@ -96,11 +124,14 @@ namespace visualSequence
 
             byte[] pixels = new byte[img.Height*img.Width];
 
+            var m1 = (max_x / 65535f / 65535f);
+            var m2 = (max_y / 65535f / 65535f);
+
             foreach (int c in chainInts)
             {
-                x1 = (c - seq1th)*(max_x/65535f/65535f);
-                y1 = (seq1th - seq2th)*(max_y/65535f/65535f);
-                z1 = (seq2th - seq3th)*(max_y/65535f/65535f);
+                x1 = (c - seq1th) * m1;
+                y1 = (seq1th - seq2th) * m2;
+                z1 = (seq2th - seq3th) * m2;
 
                 x = (int) (x1*usey + z1*usex);
                 y = (int) (y1 + (z1*usey - x1*usex)/2);
@@ -113,7 +144,7 @@ namespace visualSequence
                 // Skip first 4 and make sure it is inside of picture
                 if (outside > 4 && x <= max_x && y <= max_y && x >= 0 && y >= 0)
                 {
-                    // transformera in i byte arrayn.
+                    // transform into byte array
                     int plats = x*y;
 
                     if ((pixels[plats] + 5) < 255)
@@ -129,7 +160,6 @@ namespace visualSequence
             }
 
             LockUnlockBits(img, pixels);
-
             picBox1.Image = img;
             g.Dispose();
         }
@@ -138,27 +168,32 @@ namespace visualSequence
         {
             Random r = new Random();
 
-            chainInts = new List<int>();
+            chainInts = new List<uint>();
 
-            for (int i = 0; i < 50000; i++)
+            int samples;
+            if (!int.TryParse(tb_samples.Text, out samples))
+                return;
+
+            if (samples < 1) return;
+
+            for (int i = 0; i < samples; i++)
             {
-                chainInts.Add(r.Next(0, Int32.MaxValue));
+                chainInts.Add((uint)r.Next(0, Int32.MaxValue));
             }
         }
 
-        private void LoadSeqNumsFromFile(string filename)
+        private void LoadSeqNumsFromCsvFile(string filename)
         {
             if (!File.Exists(filename))
                 return;
 
-            chainInts = new List<int>();
+            chainInts = new List<uint>();
             using (StreamReader sr = new StreamReader(filename))
             {
                 string s = sr.ReadLine();
                 while (s != null)
                 {
-                    int a = Convert.ToInt32(s);
-                    chainInts.Add(a);
+                    chainInts.Add(Convert.ToUInt32(s));
                     s = sr.ReadLine();
                 }
             }
@@ -180,25 +215,25 @@ namespace visualSequence
 
         private void Guess3d(int seqT_3, int seqT_2, int seqT_1, int radius)
         {
-            int ny = seqT_1 - seqT_2;
-            int nz = seqT_2 - seqT_3;
+            //int ny = seqT_1 - seqT_2;
+            //int nz = seqT_2 - seqT_3;
 
-            lblOutside.Text = string.Format("Reconstructed: x={guess set} y={0} z={1} (radius={2})", ny, nz, radius);
+            //lblOutside.Text = string.Format("Reconstructed: x={guess set} y={0} z={1} (radius={2})", ny, nz, radius);
 
-            guesschain = new List<seqChain>();
+            //guesschain = new List<seqChain>();
 
-            for (int i = 3; i < chain.Count - 1; i++)
-            {
-                int distance = Math.Abs(chain[i].z - nz) + Math.Abs(chain[i].y - ny);
-                if (distance <= radius)
-                {
-                    System.Diagnostics.Debug.WriteLine(
-                        string.Format("{0} {1}", distance, chain[i].x)
-                        );
+            //for (int i = 3; i < chain.Count - 1; i++)
+            //{
+            //    int distance = Math.Abs(chain[i].z - nz) + Math.Abs(chain[i].y - ny);
+            //    if (distance <= radius)
+            //    {
+            //        System.Diagnostics.Debug.WriteLine(
+            //            string.Format("{0} {1}", distance, chain[i].x)
+            //            );
 
-                    guesschain.Add(chain[i]);
-                }
-            }
+            //        guesschain.Add(chain[i]);
+            //    }
+            //}
         }
 
         private void LockUnlockBits(Bitmap bmp, byte[] imgValues)
@@ -273,6 +308,44 @@ namespace visualSequence
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 tbFolder.Text = openFileDialog1.FileName;
+        }
+
+        // copy image to clip-board.
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            if (picBox1.Image == null) return;
+            
+            var bm = new Bitmap(size_x, size_y);
+
+            using ( var g = Graphics.FromImage(bm) )
+            {
+                var dest_rect = new Rectangle(0, 0, size_x, size_y);
+                g.DrawImage(picBox1.Image, dest_rect, dest_rect, GraphicsUnit.Pixel);
+            }
+
+            Clipboard.SetImage(bm);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (picBox1.Image == null) return;
+
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                int unique = 0;
+                
+                var path = folderBrowserDialog1.SelectedPath;
+                var name = string.Format("sequence_{0:000}.png", unique);
+                var f = Path.Combine(path, name);
+                while ( File.Exists(f) )
+                {
+                    unique++;
+                    name = string.Format("sequence_{0:000}.png", unique);
+                    f = Path.Combine(path, name);
+                }
+
+                picBox1.Image.Save(f, ImageFormat.Png);
+            }
         }
 
     }

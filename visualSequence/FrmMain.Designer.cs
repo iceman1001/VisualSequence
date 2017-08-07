@@ -39,11 +39,16 @@
             this.btnLoad = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tab1 = new System.Windows.Forms.TabPage();
+            this.tb_samples = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnGenerate = new System.Windows.Forms.Button();
             this.tag2 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tab1.SuspendLayout();
@@ -64,9 +69,9 @@
             // btnRandom
             // 
             this.btnRandom.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRandom.Location = new System.Drawing.Point(578, 494);
+            this.btnRandom.Location = new System.Drawing.Point(596, 494);
             this.btnRandom.Name = "btnRandom";
-            this.btnRandom.Size = new System.Drawing.Size(75, 36);
+            this.btnRandom.Size = new System.Drawing.Size(57, 36);
             this.btnRandom.TabIndex = 1;
             this.btnRandom.Text = "rand()";
             this.btnRandom.UseVisualStyleBackColor = true;
@@ -138,6 +143,9 @@
             // 
             // tab1
             // 
+            this.tab1.Controls.Add(this.btnSave);
+            this.tab1.Controls.Add(this.tb_samples);
+            this.tab1.Controls.Add(this.button1);
             this.tab1.Controls.Add(this.btnGenerate);
             this.tab1.Controls.Add(this.lblOutside);
             this.tab1.Controls.Add(this.btnRandom);
@@ -151,10 +159,29 @@
             this.tab1.Text = "Image";
             this.tab1.UseVisualStyleBackColor = true;
             // 
+            // tb_samples
+            // 
+            this.tb_samples.Location = new System.Drawing.Point(490, 500);
+            this.tb_samples.Name = "tb_samples";
+            this.tb_samples.Size = new System.Drawing.Size(100, 20);
+            this.tb_samples.TabIndex = 5;
+            this.tb_samples.Text = "50000";
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(309, 494);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 36);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "copy image";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // btnGenerate
             // 
             this.btnGenerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGenerate.Location = new System.Drawing.Point(487, 494);
+            this.btnGenerate.Location = new System.Drawing.Point(390, 494);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(75, 36);
             this.btnGenerate.TabIndex = 3;
@@ -175,6 +202,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkBox2);
+            this.groupBox1.Controls.Add(this.checkBox1);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.tbFolder);
             this.groupBox1.Controls.Add(this.btnLoad);
@@ -185,6 +214,26 @@
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Select folder";
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(28, 97);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(117, 17);
+            this.checkBox2.TabIndex = 10;
+            this.checkBox2.Text = "ascii integers (CSV)";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(28, 74);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(106, 17);
+            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Text = "Binary hexvalues";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -199,14 +248,25 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // Form1
+            // btnSave
+            // 
+            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.Location = new System.Drawing.Point(228, 494);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 36);
+            this.btnSave.TabIndex = 6;
+            this.btnSave.Text = "save image";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(706, 637);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.tabControl1);
-            this.Name = "Form1";
+            this.Name = "FrmMain";
             this.Text = "Visual Sequence";
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).EndInit();
             this.tabControl1.ResumeLayout(false);
@@ -237,6 +297,11 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox tb_samples;
+        private System.Windows.Forms.Button btnSave;
     }
 }
 
